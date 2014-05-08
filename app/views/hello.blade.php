@@ -58,7 +58,7 @@
             throttleProgressCallbacks:1,
             maxFiles: 1,
             query: {
-                serie_id: 999
+                some_parameter: 999 //Just an example on how to add more parameters! We don't use it in this example.
             }
           });
         // Resumable.js isn't supported, fall back on a different method
