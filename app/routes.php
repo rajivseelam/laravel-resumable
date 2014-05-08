@@ -19,3 +19,5 @@ Route::get('/', function()
 
 Route::get('upload',array('uses' => 'UploadController@upload'));
 Route::post('upload',array('uses' => 'UploadController@upload'));
+
+Route::get('download',array('uses' => 'UploadController@download'));

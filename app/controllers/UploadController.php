@@ -2,6 +2,25 @@
 
 class UploadController extends BaseController {
 
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author 
+	 **/
+	public function download()
+	{
+		if(File::exists(public_path().'/temp/'.Input::get('file')))
+		{
+			$url = url('temp/'.Input::get('file'));
+
+			$file =  Input::get('file');
+		}
+
+		return View::make('download',compact('url','file'));
+	}
+
 	/**
 	 * undocumented function
 	 *
@@ -13,10 +32,10 @@ class UploadController extends BaseController {
 
 		if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
-    		   $temp_dir = 'public/temp/'.$_GET['resumableIdentifier'];
-    		   $chunk_file = $temp_dir.'/'.$_GET['resumableFilename'].'.part'.$_GET['resumableChunkNumber'];
+    		   $temp_dir = 'public/temp/'.Input::get('resumableIdentifier');
+    		   $chunk_file = $temp_dir.'/'.Input::get('resumableFilename').'.part'.Input::get('resumableChunkNumber');
 
-	    	   if (file_exists($chunk_file)) {
+	    	   if (File::exists($chunk_file)) {
 	    	   	 return Response::json(array(), 200);
 		       } 
 		       else
@@ -29,28 +48,28 @@ class UploadController extends BaseController {
 
 		    // check the error status
 		    if ($file['error'] != 0) {
-		        $this->_log('error '.$file['error'].' in file '.$_POST['resumableFilename']);
+		        $this->_log('error '.$file['error'].' in file '.Input::get('resumableFilename'));
 		        continue;
 		    }
 
 		    // init the destination file (format <filename.ext>.part<#chunk>
 		    // the file is stored in a temporary directory
-		    $temp_dir = 'public/temp/'.$_POST['resumableIdentifier'];
-		    $dest_file = $temp_dir.'/'.$_POST['resumableFilename'].'.part'.$_POST['resumableChunkNumber'];
+		    $temp_dir = 'public/temp/'.Input::get('resumableIdentifier');
+		    $dest_file = $temp_dir.'/'.Input::get('resumableFilename').'.part'.Input::get('resumableChunkNumber');
 
 		    // create the temporary directory
-		    if (!is_dir($temp_dir)) {
-		        mkdir($temp_dir, 0777, true);
+		    if (!File::isDirectory($temp_dir)) {
+		        File::makeDirectory($temp_dir, 0777, true);
 		    }
 
 		    // move the temporary file
 		    if (!move_uploaded_file($file['tmp_name'], $dest_file)) {
-		        $this->_log('Error saving (move_uploaded_file) chunk '.$_POST['resumableChunkNumber'].' for file '.$_POST['resumableFilename']);
+		        $this->_log('Error saving (move_uploaded_file) chunk '.Input::get('resumableChunkNumber').' for file '.Input::get('resumableFilename'));
 		    } else {
 
 		        // check if all the parts present, and create the final destination file
-		        $this->createFileFromChunks($temp_dir, $_POST['resumableFilename'], 
-		                $_POST['resumableChunkSize'], $_POST['resumableTotalSize']);
+		        $this->createFileFromChunks($temp_dir, Input::get('resumableFilename'), 
+		                Input::get('resumableChunkSize'), Input::get('resumableTotalSize'));
 		    }
 		}
 
@@ -64,15 +83,10 @@ class UploadController extends BaseController {
 	 */
 	function _log($str) {
 
-	    // log to the output
 	    $log_str = date('d.m.Y').": {$str}\r\n";
-	    echo $log_str;
 
-	    // log to file
-	    if (($fp = fopen('public/temp/upload_log.txt', 'a+')) !== false) {
-	        fputs($fp, $log_str);
-	        fclose($fp);
-	    }
+	    File::append('public/temp/upload_log.txt',$log_str);
+
 	}
 
 	/**
@@ -82,20 +96,9 @@ class UploadController extends BaseController {
 	 * @link http://php.net/manual/en/function.rmdir.php
 	 */
 	function rrmdir($dir) {
-	    if (is_dir($dir)) {
-	        $objects = scandir($dir);
-	        foreach ($objects as $object) {
-	            if ($object != "." && $object != "..") {
-	                if (filetype($dir . "/" . $object) == "dir") {
-	                    rrmdir($dir . "/" . $object); 
-	                } else {
-	                    unlink($dir . "/" . $object);
-	                }
-	            }
-	        }
-	        reset($objects);
-	        rmdir($dir);
-	    }
+
+		File::deleteDirectory($dir);
+
 	}
 
 	/**
