@@ -9,6 +9,9 @@ How to Use?
 
 Have fun!
 
+## This also has an example on how to use EvaporateJS with Laravel
+
+Go to *routes.php* file and start from there.
 
 Resumable.js is at http://resumablejs.com/
 

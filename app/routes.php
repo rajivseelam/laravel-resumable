@@ -17,6 +17,12 @@ Route::get('/', function()
 	return View::make('hello');
 });
 
+
+Route::get('upload',array('uses' => 'UploadController@upload'));
+Route::post('upload',array('uses' => 'UploadController@upload'));
+
+Route::get('download',array('uses' => 'UploadController@download'));
+
 Route::get('evaporate',function()
 {
 	return View::make('evaporate');
@@ -35,8 +41,3 @@ Route::get('sign_auth',function()
 	return $response;
 
 });
-
-Route::get('upload',array('uses' => 'UploadController@upload'));
-Route::post('upload',array('uses' => 'UploadController@upload'));
-
-Route::get('download',array('uses' => 'UploadController@download'));

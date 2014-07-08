@@ -34,11 +34,7 @@
 <body>
 <div class="container">
 	<div class="row">
-		<div class="col-md-12">
-
-
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script src="{{ asset('js/evaporate.js') }}"></script>
+	<div class="col-md-12">
 
 
 		<div style="margin-bottom:20px;">
@@ -55,7 +51,8 @@
 		 	Browse <input type="file" id="files"  multiple />
 		</span>
 
-
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+		<script src="{{ asset('js/evaporate.js') }}"></script>
 	      <script language="javascript">
 	      
 	         var files;
